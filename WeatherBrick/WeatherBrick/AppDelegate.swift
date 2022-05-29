@@ -1,7 +1,4 @@
-//
-//  Created by Volodymyr Andriienko on 11/3/21.
-//  Copyright © 2021 VAndrJ. All rights reserved.
-//
+
 
 import UIKit
 
@@ -13,6 +10,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?
     ) -> Bool {
+        application.isStatusBarHidden = false
         return true
     }
 }

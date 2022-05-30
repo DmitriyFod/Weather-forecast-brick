@@ -2,7 +2,7 @@ import Foundation
 import UIKit
 
 class LabelInfo: UILabel {
-     var darkLabelInfo: UILabel = {
+    var darkLabelInfo: UILabel = {
         let darkLabelInfo = UILabel()
         darkLabelInfo.isHidden = false
         darkLabelInfo.frame = CGRect(x: 0, y: 0, width: 277, height: 372)

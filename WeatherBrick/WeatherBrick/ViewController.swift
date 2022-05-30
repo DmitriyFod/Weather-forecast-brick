@@ -18,47 +18,49 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var locationLabel: UIImageView!
     @IBOutlet weak var searchLabel: UIImageView!
-    var gradientLayer = CAGradientLayer()
-    let buttonHide = buttonH().buttonToHide
-    let labelInfo = LabelInfo().labelOpenInfo
-    let darkInfo = LabelInfo().darkLabelInfo
+    lazy var buttonToHide: UIButton = {
+        let buttonToHide = UIButton()
+        buttonToHide.layer.backgroundColor = UIColor(red: 1, green: 0.6, blue: 0.375, alpha: 1).cgColor
+        buttonToHide.frame = CGRect(x: 140, y: 575, width: 115, height: 31)
+        buttonToHide.titleLabel?.textColor = UIColor.orange
+        buttonToHide.layer.cornerRadius = buttonToHide.frame.height / 2
+        buttonToHide.clipsToBounds = true
+        buttonToHide.layer.borderColor = UIColor.gray.cgColor
+        buttonToHide.layer.borderWidth = 1
+        buttonToHide.setTitleColor(.gray, for: .normal)
+        buttonToHide.titleLabel?.font =  UIFont(name: "SF Pro Display Light", size: 17)
+        buttonToHide.isUserInteractionEnabled = true
+        buttonToHide.setTitle("Hide", for: .normal)
+        buttonToHide.addTarget(self, action: #selector(closeInfoView), for: .touchUpInside)
+        return buttonToHide
+    }()
+    @IBAction func infoPressed(_ sender: Any) {
+        infoView()
+    }
     enum State {
         case close
         case open
     }
+    let labelInfo = LabelInfo().labelOpenInfo
+    let darkInfo = LabelInfo().darkLabelInfo
     var state : State = .close
-    @IBAction func infoPressed(_ sender: Any) {
-        infoView()
-    }
     let apiKey = "00431c949d9475cc6765cb11c5a3b7c8"
     var lat : Double = 0.0
     var lon : Double = 0.0
     var activityIndicator : NVActivityIndicatorView!
     var locationManager = CLLocationManager()
-    class buttonH : UIButton {
-        var buttonToHide: UIButton = {
-            let buttonToHide = UIButton()
-            buttonToHide.layer.backgroundColor = UIColor(red: 1, green: 0.6, blue: 0.375, alpha: 1).cgColor
-            buttonToHide.frame = CGRect(x: 140, y: 575, width: 115, height: 31)
-            buttonToHide.titleLabel?.textColor = UIColor.orange
-            buttonToHide.layer.cornerRadius = buttonToHide.frame.height / 2
-            buttonToHide.clipsToBounds = true
-            buttonToHide.layer.borderWidth = 1
-            buttonToHide.isUserInteractionEnabled = true
-            buttonToHide.setTitle("Hide", for: .normal)
-            buttonToHide.addTarget(ViewController.buttonH.self, action: #selector(closeInfoView), for: .touchUpInside)
-            return buttonToHide
-        }()
-
-    }
     override func viewDidLoad() {
         super.viewDidLoad()
+        rock.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture)))
+        rock.isUserInteractionEnabled = true
         let indicatorSize: CGFloat = 70
         let indicatorFrame = CGRect(x: 245, y: 600, width: indicatorSize, height: indicatorSize)
         activityIndicator = NVActivityIndicatorView(frame: indicatorFrame, type: .lineScale, color: UIColor.darkGray, padding: 4.0)
         view.addSubview(activityIndicator)
         infoButton.layer.cornerRadius = 15
         infoButton.layer.masksToBounds = true
+        cityCountry.adjustsFontSizeToFitWidth = true
+        cityCountry.minimumScaleFactor = 0.5
         locationManager.requestWhenInUseAuthorization()
         activityIndicator.startAnimating()
         if(CLLocationManager.locationServicesEnabled()) {
@@ -67,10 +69,10 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
             locationManager.startUpdatingLocation()
         }
     }
-    
     override var preferredStatusBarStyle: UIStatusBarStyle {
         return .darkContent
     }
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let location = locations[0]
         lat = location.coordinate.latitude
@@ -103,10 +105,14 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
                 default:
                     self.rock.image = UIImage(named: "image_stone_normal")
                 }
+                self.rock.isHidden = false
                 self.temperature.text = "\(Int(round(jsonTemp["temp"].doubleValue)))°"
+            } else {
+                self.rock.isHidden = true
+                self.cityCountry.text = "No Connection"
             }
+            self.locationManager.stopUpdatingLocation()
             self.activityIndicator.stopAnimating()
-            
         }
     }
     func animationWind () {
@@ -139,7 +145,6 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         labelInfo.isHidden = false
         darkInfo.isHidden = false
         
-        
         let parent = self.view!
         parent.addSubview(darkInfo)
         darkInfo.translatesAutoresizingMaskIntoConstraints = false
@@ -147,7 +152,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         darkInfo.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.45).isActive = true
         darkInfo.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 49).isActive = true
         darkInfo.topAnchor.constraint(equalTo: parent.topAnchor, constant: 220).isActive = true
-    
+        
         parent.addSubview(labelInfo)
         labelInfo.translatesAutoresizingMaskIntoConstraints = false
         labelInfo.widthAnchor.constraint(equalToConstant: view.bounds.width * 0.73).isActive = true
@@ -155,18 +160,35 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         labelInfo.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 49).isActive = true
         labelInfo.topAnchor.constraint(equalTo: parent.topAnchor, constant: 220).isActive = true
         state = .close
-        parent.addSubview(buttonHide)
+        parent.addSubview(buttonToHide)
     }
-
+    @objc func handlePanGesture (gesture: UIPanGestureRecognizer) {
+        if gesture.state == .changed {
+            let translation = gesture.translation(in: self.view)
+            rock.transform = CGAffineTransform(translationX: 0, y: translation.y)
+            activityIndicator.startAnimating()
+        } else if gesture.state == .ended {
+            UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseIn, animations: {
+                self.rock.transform = .identity
+            })
+            locationManager.startUpdatingLocation()
+            activityIndicator.stopAnimating()
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        self.cityCountry.text = "Can't use your coordinates"
+    }
     @objc func closeInfoView () {
-        
         rock.isHidden = false
+        searchLabel.isHidden = false
+        locationLabel.isHidden = false
         temperature.isHidden = false
         cityCountry.isHidden = false
         weather.isHidden = false
         infoButton.isHidden = false
         labelInfo.isHidden = true
         darkInfo.isHidden = true
+        buttonToHide.removeFromSuperview()
         state = .open
     }
 }

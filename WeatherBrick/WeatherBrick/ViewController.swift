@@ -1,7 +1,4 @@
-//
-//  Created by Volodymyr Andriienko on 11/3/21.
-//  Copyright © 2021 VAndrJ. All rights reserved.
-//
+
 
 import UIKit
 import Alamofire
@@ -21,7 +18,7 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     lazy var buttonToHide: UIButton = {
         let buttonToHide = UIButton()
         buttonToHide.layer.backgroundColor = UIColor(red: 1, green: 0.6, blue: 0.375, alpha: 1).cgColor
-        buttonToHide.frame = CGRect(x: 140, y: 575, width: 115, height: 31)
+        buttonToHide.frame = CGRect(x: 0, y: 0, width: 115, height: 31)
         buttonToHide.titleLabel?.textColor = UIColor.orange
         buttonToHide.layer.cornerRadius = buttonToHide.frame.height / 2
         buttonToHide.clipsToBounds = true
@@ -51,6 +48,8 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
     var locationManager = CLLocationManager()
     override func viewDidLoad() {
         super.viewDidLoad()
+        infoButton.setGradient(colorOne: UIColor(red: 1, green: 0.6, blue: 0.375, alpha: 1), colorTwo: UIColor(red: 0.977, green: 0.315, blue: 0.106, alpha: 1))
+        buttonToHide.setGradient(colorOne: UIColor(red: 1, green: 0.6, blue: 0.375, alpha: 1), colorTwo: UIColor(red: 0.977, green: 0.315, blue: 0.106, alpha: 1))
         rock.addGestureRecognizer(UIPanGestureRecognizer(target: self, action: #selector(self.handlePanGesture)))
         rock.isUserInteractionEnabled = true
         let indicatorSize: CGFloat = 70
@@ -152,15 +151,25 @@ class ViewController: UIViewController, CLLocationManagerDelegate {
         darkInfo.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.45).isActive = true
         darkInfo.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 49).isActive = true
         darkInfo.topAnchor.constraint(equalTo: parent.topAnchor, constant: 220).isActive = true
-        
         parent.addSubview(labelInfo)
         labelInfo.translatesAutoresizingMaskIntoConstraints = false
         labelInfo.widthAnchor.constraint(equalToConstant: view.bounds.width * 0.73).isActive = true
         labelInfo.heightAnchor.constraint(equalToConstant: view.bounds.height * 0.45).isActive = true
         labelInfo.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 49).isActive = true
         labelInfo.topAnchor.constraint(equalTo: parent.topAnchor, constant: 220).isActive = true
-        state = .close
+        let shadowSize: CGFloat = 5
+        let shadowDistance: CGFloat = 15
+        let contactRect = CGRect(x: -shadowSize * 5, y: view.bounds.width * 0.95 - (shadowSize * 0.4) + shadowDistance, width: view.bounds.height * 0.4 + shadowSize * 2, height: shadowSize)
+        labelInfo.layer.shadowPath = UIBezierPath(ovalIn: contactRect).cgPath
+        labelInfo.layer.shadowRadius = 5
+        labelInfo.layer.shadowOpacity = 0.5
         parent.addSubview(buttonToHide)
+        buttonToHide.translatesAutoresizingMaskIntoConstraints = false
+        buttonToHide.widthAnchor.constraint(equalToConstant: 115).isActive = true
+        buttonToHide.heightAnchor.constraint(equalToConstant: 31).isActive = true
+        buttonToHide.leadingAnchor.constraint(equalTo: parent.leadingAnchor, constant: 140).isActive = true
+        buttonToHide.topAnchor.constraint(equalTo: parent.topAnchor, constant: 565).isActive = true
+        state = .close
     }
     @objc func handlePanGesture (gesture: UIPanGestureRecognizer) {
         if gesture.state == .changed {

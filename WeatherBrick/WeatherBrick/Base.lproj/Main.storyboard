@@ -19,7 +19,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="WeatherBrick" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController restorationIdentifier="ViewController" storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="WeatherBrick" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -33,6 +33,7 @@
                             </imageView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MD2-a4-Dcm">
                                 <rect key="frame" x="16" y="535" width="124" height="126"/>
+                                <accessibility key="accessibilityConfiguration" identifier="temp"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="126" id="2fl-7o-XVP"/>
                                     <constraint firstAttribute="width" constant="124" id="6if-kA-7IO"/>
@@ -68,6 +69,7 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="top" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cma-2Y-3zx">
                                 <rect key="frame" x="121.5" y="838" width="171" height="88"/>
                                 <color key="backgroundColor" red="0.87556378865979378" green="0.39314980626099855" blue="0.097896832905835285" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                                <accessibility key="accessibilityConfiguration" identifier="infoButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="88" id="LbU-9s-Zvq"/>
                                     <constraint firstAttribute="width" constant="171" id="bR8-6T-9dm"/>
@@ -85,6 +87,7 @@
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="AXm-mi-jAO">
                                 <rect key="frame" x="148.5" y="757" width="117" height="22"/>
+                                <accessibility key="accessibilityConfiguration" identifier="cityLabel"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="22" id="SdI-OB-YcH"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="22" id="auv-aQ-yT8"/>

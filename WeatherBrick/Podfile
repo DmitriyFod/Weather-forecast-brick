@@ -14,6 +14,7 @@ pod 'NVActivityIndicatorView'
   target 'WeatherBrickTests' do
     inherit! :search_paths
     # Pods for testing
+pod 'SnapshotTesting'
   end
 
   target 'WeatherBrickUITests' do
